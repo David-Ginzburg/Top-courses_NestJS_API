@@ -7,7 +7,7 @@ import { ProductModule } from './product/product.module';
 import { ReviewModule } from './review/review.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModel } from './users/models/user.model';
+import { UsersModule } from './users/users.module';
 
 @Module({
 	imports: [
@@ -18,7 +18,7 @@ import { UserModel } from './users/models/user.model';
 		TopPageModule,
 		ProductModule,
 		ReviewModule,
-		UserModel,
+		UsersModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

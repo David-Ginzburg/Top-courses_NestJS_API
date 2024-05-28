@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-	constructor(@InjectModel(UserModel.name) private userModel: Model<UserDocument>) {}
+	constructor(@InjectModel(UserModel.name) private readonly userModel: Model<UserDocument>) {}
 
 	async getByEmail(email: string) {
 		return this.userModel.findOne({ email });

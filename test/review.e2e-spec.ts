@@ -6,8 +6,14 @@ import { CreateReviewDto } from '../src/review/dto/create-review.dto';
 import { Types, disconnect } from 'mongoose';
 import { ReviewDocument } from 'src/review/review.model';
 import { REVIEW_NOT_FOUND } from '../src/review/review.constants';
+import { AuthDto } from 'src/auth/dto/auth.dto';
 
 const productId = new Types.ObjectId().toHexString();
+
+const loginDto: AuthDto = {
+	password: 'ewfwef',
+	login: 'ewrger@greger.com',
+};
 
 const testDto: CreateReviewDto = {
 	name: 'Тест',
@@ -21,6 +27,7 @@ const testDto: CreateReviewDto = {
 describe('AppController (e2e)', () => {
 	let app: INestApplication;
 	let createdId: Types.ObjectId;
+	let token: string;
 
 	beforeEach(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -29,6 +36,9 @@ describe('AppController (e2e)', () => {
 
 		app = moduleFixture.createNestApplication();
 		await app.init();
+
+		const { body } = await request(app.getHttpServer()).post('/auth/login').send(loginDto);
+		token = body.access_token;
 	});
 
 	it('/review/create (POST) - success', async () => {
@@ -53,6 +63,7 @@ describe('AppController (e2e)', () => {
 	it('/review/byProduct/:productId (GET) - success', async () => {
 		return request(app.getHttpServer())
 			.get('/review/byProduct/' + productId)
+			.set('Authorization', 'Bearer ' + token)
 			.expect(200)
 			.then(({ body }: request.Response) => {
 				expect(body.length).toBe(1);
@@ -62,6 +73,7 @@ describe('AppController (e2e)', () => {
 	it('/review/byProduct/:productId (GET) - fail', async () => {
 		return request(app.getHttpServer())
 			.get('/review/byProduct/' + new Types.ObjectId().toHexString())
+			.set('Authorization', 'Bearer ' + token)
 			.expect(200)
 			.then(({ body }: request.Response) => {
 				expect(body.length).toBe(0);
@@ -71,12 +83,14 @@ describe('AppController (e2e)', () => {
 	it('/review/:id (DELETE) - success', () => {
 		return request(app.getHttpServer())
 			.delete('/review/' + createdId)
+			.set('Authorization', 'Bearer ' + token)
 			.expect(200);
 	});
 
 	it('/review/:id (DELETE) - fail', async () => {
 		return request(app.getHttpServer())
 			.delete('/review/' + new Types.ObjectId().toHexString())
+			.set('Authorization', 'Bearer ' + token)
 			.expect(404)
 			.then(({ body }: request.Response) => {
 				expect(body.statusCode).toBe(404);

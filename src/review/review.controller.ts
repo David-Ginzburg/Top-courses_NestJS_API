@@ -16,6 +16,7 @@ import { ReviewService } from './review.service';
 import { REVIEW_NOT_FOUND } from './review.constants';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Types } from 'mongoose';
+import { IdValidationPipe } from 'src/pipes/id-validation.pipe';
 
 @Controller('review')
 export class ReviewController {
@@ -31,7 +32,7 @@ export class ReviewController {
 
 	@UseGuards(JwtAuthGuard)
 	@Delete(':id')
-	async delete(@Param('id') id: string) {
+	async delete(@Param('id', IdValidationPipe) id: string) {
 		const deletedDoc = await this.reviewService.delete(id);
 
 		if (!deletedDoc) {
@@ -41,7 +42,7 @@ export class ReviewController {
 
 	@UseGuards(JwtAuthGuard)
 	@Get('byProduct/:productId')
-	async getByProduct(@Param('productId') productId: Types.ObjectId) {
+	async getByProduct(@Param('productId', IdValidationPipe) productId: Types.ObjectId) {
 		productId = new Types.ObjectId(productId);
 		return this.reviewService.findByProductId(productId);
 	}

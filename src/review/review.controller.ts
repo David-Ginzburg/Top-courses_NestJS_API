@@ -15,14 +15,17 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewService } from './review.service';
 import { REVIEW_NOT_FOUND } from './review.constants';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Types } from 'mongoose';
 
 @Controller('review')
 export class ReviewController {
 	constructor(private readonly reviewService: ReviewService) {}
 
+	@UseGuards(JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
 	@Post('create')
 	async create(@Body() dto: CreateReviewDto) {
+		dto.productId = new Types.ObjectId(dto.productId);
 		return this.reviewService.create(dto);
 	}
 
@@ -38,7 +41,8 @@ export class ReviewController {
 
 	@UseGuards(JwtAuthGuard)
 	@Get('byProduct/:productId')
-	async getByProduct(@Param('productId') productId: string) {
+	async getByProduct(@Param('productId') productId: Types.ObjectId) {
+		productId = new Types.ObjectId(productId);
 		return this.reviewService.findByProductId(productId);
 	}
 }

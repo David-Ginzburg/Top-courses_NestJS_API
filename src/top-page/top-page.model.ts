@@ -18,7 +18,7 @@ export class HhData {
 	@Prop()
 	middleSalary: number;
 
-	@Prop({})
+	@Prop()
 	seniorSalary: number;
 }
 

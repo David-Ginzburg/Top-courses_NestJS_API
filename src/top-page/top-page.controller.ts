@@ -94,6 +94,13 @@ export class TopPageController {
 		return this.topPageService.findByCategory(dto.firstCategory);
 	}
 
+	@UsePipes(new ValidationPipe())
+	@HttpCode(200)
+	@Post('find-and-aggregate-by-category')
+	async findAndAggregateByCategory(@Body() dto: FindTopPageDto) {
+		return this.topPageService.findAndAggregateByCategory(dto.firstCategory);
+	}
+
 	@Get('textSearch/:text')
 	async textSearch(@Param('text') text: string) {
 		return this.topPageService.findByText(text);

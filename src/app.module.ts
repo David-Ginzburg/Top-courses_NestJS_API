@@ -13,12 +13,27 @@ dotenv.config();
 		ConfigModule.forRoot(),
 		MongooseModule.forRootAsync({
 			imports: [ConfigModule],
-			useFactory: async (configService: ConfigService) => ({
-				uri: process.env.NODE_ENV === 'docker' ? 'MONGO_DOCKER_URI' : 'MONGO_LOCAL_URI',
-				user: configService.get<string>('MONGO_INITDB_ROOT_USERNAME'),
-				pass: configService.get<string>('MONGO_INITDB_ROOT_PASSWORD'),
-				authSource: 'admin',
-			}),
+			useFactory: async (configService: ConfigService) => {
+				const uri = configService.get<string>(
+					process.env.NODE_ENV === 'docker' ? 'MONGO_DOCKER_URI' : 'MONGO_LOCAL_URI',
+				);
+				console.log('Mongo URI:', uri);
+				console.log(
+					'Mongo Username:',
+					configService.get<string>('MONGO_INITDB_ROOT_USERNAME'),
+				);
+				console.log(
+					'Mongo Password:',
+					configService.get<string>('MONGO_INITDB_ROOT_PASSWORD'),
+				);
+
+				return {
+					uri,
+					user: configService.get<string>('MONGO_INITDB_ROOT_USERNAME'),
+					pass: configService.get<string>('MONGO_INITDB_ROOT_PASSWORD'),
+					authSource: 'admin',
+				};
+			},
 			inject: [ConfigService],
 		}),
 		AuthModule,

@@ -60,7 +60,7 @@ jobs:
                       sudo docker pull ghcr.io/david-ginzburg/top-courses_nestjs_api/top-courses_mongo-db:develop
                       sudo docker stop top-courses-db || true
                       sudo docker rm top-courses-db || true
-                      sudo docker run -d --name top-courses-db --network top-courses-network -p 27017:27017 ghcr.io/david-ginzburg/top-courses_nestjs_api/top-courses_mongo-db:develop
+                      sudo docker run -d --name top-courses-db --network top-courses-network -p 27017:27017 -v $(pwd)/mongo-data:/data/db ghcr.io/david-ginzburg/top-courses_nestjs_api/top-courses_mongo-db:develop
                       sudo docker pull ghcr.io/david-ginzburg/top-courses_nestjs_api/top-courses_nestjs_api:develop
                       sudo docker stop top-courses_nestjs_api || true
                       sudo docker rm top-courses_nestjs_api || true

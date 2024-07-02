@@ -17,15 +17,6 @@ dotenv.config();
 				const uri = configService.get<string>(
 					process.env.NODE_ENV === 'docker' ? 'MONGO_DOCKER_URI' : 'MONGO_LOCAL_URI',
 				);
-				console.log('Mongo URI:', uri);
-				console.log(
-					'Mongo Username:',
-					configService.get<string>('MONGO_INITDB_ROOT_USERNAME'),
-				);
-				console.log(
-					'Mongo Password:',
-					configService.get<string>('MONGO_INITDB_ROOT_PASSWORD'),
-				);
 
 				return {
 					uri,
